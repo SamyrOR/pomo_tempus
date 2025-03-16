@@ -28,6 +28,7 @@ class MainApp extends StatelessWidget {
       valueListenable: themeHandler.themeNotifier,
       builder: (context, value, child) {
         return MaterialApp.router(
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(colorScheme: value, useMaterial3: true),
           routerConfig: GoRouter(
             routes: [
