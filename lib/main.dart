@@ -1,33 +1,44 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pomo_tempus/theme_handler.dart';
+import 'package:pomo_tempus/ui/home/view_models/home_view_model.dart';
+import 'package:pomo_tempus/ui/home/widgets/home_page.dart';
+import 'package:provider/provider.dart';
 import 'package:windows_notification/notification_message.dart';
 import 'package:windows_notification/windows_notification.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await localNotifier.setup(
-  //   appName: 'pomo_tempus',
-  //   // The parameter shortcutPolicy only works on Windows
-  //   shortcutPolicy: ShortcutPolicy.requireCreate,
-  // );
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => HomeViewModel())],
+      child: MainApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     final themeHandler = ThemeHandler.instance;
     return ValueListenableBuilder(
       valueListenable: themeHandler.themeNotifier,
       builder: (context, value, child) {
-        return MaterialApp(
-          title: 'Flutter Demo',
+        return MaterialApp.router(
           theme: ThemeData(colorScheme: value, useMaterial3: true),
-          home: const MyHomePage(title: 'Flutter Demo Home Page'),
+          routerConfig: GoRouter(
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (context, state) {
+                  return HomePage();
+                },
+              ),
+            ],
+          ),
         );
       },
     );
@@ -119,26 +130,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 },
               ),
-              // const SizedBox(height: 15),
-              // CupertinoButton(
-              //   color: Colors.red,
-              //   child: const Text("dark red"),
-              //   onPressed: () {
-              //     themeHandler.updateTheme(
-              //       ColorScheme.fromSeed(seedColor: Colors.red),
-              //     );
-              //   },
-              // ),
-              // const SizedBox(height: 15),
-              // CupertinoButton(
-              //   color: Colors.teal,
-              //   child: const Text("light teal"),
-              //   onPressed: () {
-              //     themeHandler.updateTheme(
-              //       ColorScheme.fromSeed(seedColor: Colors.teal),
-              //     );
-              //   },
-              // ),
             ],
           ),
         ),
