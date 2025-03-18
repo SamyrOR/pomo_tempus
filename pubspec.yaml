@@ -39,6 +39,7 @@ dependencies:
   local_notifier: ^0.1.6
   provider: ^6.1.2
   go_router: ^14.8.1
+  flutter_colorpicker: ^1.1.0
 
 dev_dependencies:
   flutter_test:
