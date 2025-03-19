@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:pomo_tempus/ui/home/view_models/home_view_model.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key, required this.viewModel});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
+  final HomeViewModel viewModel;
 
-class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,35 +25,43 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.timer),
-          // Icon(Icons.free_breakfast),
-          Text("25:00", style: TextStyle(fontSize: 64)),
-          Row(
+      body: ListenableBuilder(
+        listenable: viewModel,
+
+        builder: (context, _) {
+          return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(width: 68),
-              IconButton(
-                icon: Icon(Icons.play_arrow),
-                iconSize: 32,
-                onPressed: () {},
+              Icon(Icons.timer),
+              // Icon(Icons.free_breakfast),
+              Text("25:00", style: TextStyle(fontSize: 64)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(width: 68),
+                  IconButton(
+                    icon: Icon(Icons.play_arrow),
+                    iconSize: 32,
+                    onPressed: () {
+                      viewModel.play();
+                    },
+                  ),
+                  // IconButton(
+                  //   icon: Icon(Icons.pause),
+                  //   iconSize: 32,
+                  //   onPressed: () {},
+                  // ),
+                  IconButton(
+                    icon: Icon(Icons.skip_next),
+                    iconSize: 32,
+                    onPressed: () {},
+                  ),
+                ],
               ),
-              // IconButton(
-              //   icon: Icon(Icons.pause),
-              //   iconSize: 32,
-              //   onPressed: () {},
-              // ),
-              IconButton(
-                icon: Icon(Icons.skip_next),
-                iconSize: 32,
-                onPressed: () {},
-              ),
+              SizedBox(height: 64),
             ],
-          ),
-          SizedBox(height: 64),
-        ],
+          );
+        },
       ),
     );
   }
