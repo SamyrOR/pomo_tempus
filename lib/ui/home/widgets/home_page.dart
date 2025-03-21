@@ -36,10 +36,16 @@ class _HomePageState extends State<HomePage> {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // widget.viewModel.isPlaying
-              // ? Icon(Icons.timer)
-              // : Icon(Icons.free_breakfast),
-              Text("25:00", style: TextStyle(fontSize: 64)),
+              widget.viewModel.actualTimerString == 'focus'
+                  ? Icon(Icons.timer)
+                  : widget.viewModel.actualTimerString == 'shortBreak'
+                  ? Icon(Icons.free_breakfast)
+                  : Icon(Icons.weekend),
+              Text(
+                // widget.viewModel.formattedTimer,
+                '${widget.viewModel.actualTimer.inMinutes < 10 ? '0' : ''}${widget.viewModel.actualTimer.inMinutes} : ${widget.viewModel.minuteInSeconds.inSeconds < 10 ? '0' : ''}${widget.viewModel.minuteInSeconds.inSeconds}',
+                style: TextStyle(fontSize: 64),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
