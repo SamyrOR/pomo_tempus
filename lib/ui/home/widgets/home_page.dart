@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(Icons.settings),
               iconSize: 32,
               onPressed: () {
-                _configBuilder(context);
+                _configBuilder(context, widget.viewModel);
               },
             ),
           ),
@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-Future<void> _configBuilder(BuildContext context) {
+Future<void> _configBuilder(BuildContext context, HomeViewModel viewModel) {
   return showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -96,14 +96,11 @@ Future<void> _configBuilder(BuildContext context) {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text("Pomodoro:"),
-                      ),
-                    ),
-                    Expanded(
+                    Text("Pomodoro:"),
+                    SizedBox(
+                      width: 75,
                       child: TextFormField(
                         initialValue: "25",
                         textAlign: TextAlign.center,
@@ -117,9 +114,12 @@ Future<void> _configBuilder(BuildContext context) {
                 ),
                 SizedBox(height: 16),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                   children: [
-                    Expanded(child: Text("Short break:")),
-                    Expanded(
+                    Text("Short break:"),
+                    SizedBox(
+                      width: 75,
                       child: TextFormField(
                         initialValue: "5",
                         textAlign: TextAlign.center,
@@ -133,9 +133,11 @@ Future<void> _configBuilder(BuildContext context) {
                 ),
                 SizedBox(height: 16),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(child: Text("Long break:")),
-                    Expanded(
+                    Text("Long break:"),
+                    SizedBox(
+                      width: 75,
                       child: TextFormField(
                         initialValue: "15",
                         textAlign: TextAlign.center,
@@ -144,6 +146,17 @@ Future<void> _configBuilder(BuildContext context) {
                           FilteringTextInputFormatter.digitsOnly,
                         ],
                       ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Notification enabled: "),
+                    Checkbox(
+                      value: viewModel.isNotificationEnabled,
+                      onChanged: (value) {},
                     ),
                   ],
                 ),
@@ -163,7 +176,13 @@ Future<void> _configBuilder(BuildContext context) {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: Text("Close"),
+            child: Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text("Save"),
           ),
         ],
       );
