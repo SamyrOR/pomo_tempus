@@ -68,7 +68,9 @@ class _HomePageState extends State<HomePage> {
                   IconButton(
                     icon: Icon(Icons.skip_next),
                     iconSize: 32,
-                    onPressed: () {},
+                    onPressed: () {
+                      widget.viewModel.nextTimer();
+                    },
                   ),
                 ],
               ),
@@ -121,9 +123,7 @@ Future<void> _configBuilder(BuildContext context) {
                       child: TextFormField(
                         initialValue: "5",
                         textAlign: TextAlign.center,
-
                         decoration: InputDecoration(suffixText: "min"),
-
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
                         ],

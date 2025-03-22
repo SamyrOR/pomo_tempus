@@ -12,10 +12,9 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
   late Duration actualTimer = focusTimer;
   String actualTimerString = 'focus';
   int cyclesCounter = 0;
+  // late String formattedTimer = formatTimer(actualTimer);
 
   bool isPlaying = false;
-
-  String formattedTimer = '';
 
   void play() {
     isPlaying = !isPlaying;
@@ -30,21 +29,7 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
       if (isPlaying) {
         if (actualTimer.inSeconds == 0 && minuteInSeconds.inSeconds == 0) {
           timer.cancel();
-          if (cyclesCounter > 0 && cyclesCounter % 4 == 0) {
-            actualTimer = longBreakTimer;
-            actualTimerString = 'longBreak';
-            isPlaying = false;
-          } else if (actualTimerString == 'focus') {
-            actualTimer = shortBreakTimer;
-            actualTimerString = 'shortBreak';
-            isPlaying = false;
-          } else if (actualTimerString == 'shortBreak') {
-            actualTimer = focusTimer;
-            actualTimerString = 'focus';
-            isPlaying = false;
-            cyclesCounter++;
-          }
-          notifyListeners();
+          nextTimer();
         }
 
         if (minuteInSeconds.inSeconds == 0) {
@@ -63,8 +48,31 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
     });
   }
 
+  void nextTimer() {
+    if (cyclesCounter > 0 && cyclesCounter % 4 == 0) {
+      actualTimer = longBreakTimer;
+      actualTimerString = 'longBreak';
+      isPlaying = false;
+      minuteInSeconds = Duration(seconds: 0);
+      cyclesCounter = 0;
+    } else if (actualTimerString == 'focus') {
+      actualTimer = shortBreakTimer;
+      actualTimerString = 'shortBreak';
+      isPlaying = false;
+      minuteInSeconds = Duration(seconds: 0);
+    } else if (actualTimerString == 'shortBreak' ||
+        actualTimerString == 'longBreak') {
+      actualTimer = focusTimer;
+      actualTimerString = 'focus';
+      isPlaying = false;
+      cyclesCounter++;
+      minuteInSeconds = Duration(seconds: 0);
+    }
+    notifyListeners();
+  }
+
   // formatTimer(Duration actualTime) {
-  // formattedTimer =
-  // '${actualTime.inMinutes} : ${minuteInSeconds.inSeconds < 10 ? '0' : ''}${minuteInSeconds.inSeconds}';
+  //   formattedTimer =
+  //       '${actualTimer.inMinutes < 10 ? '0' : ''}${actualTimer.inMinutes} : ${minuteInSeconds.inSeconds < 10 ? '0' : ''}${minuteInSeconds.inSeconds}';
   // }
 }
