@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:windows_notification/notification_message.dart';
+import 'package:windows_notification/windows_notification.dart';
 
 class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
   HomeViewModel();
@@ -13,8 +15,14 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
   String actualTimerString = 'focus';
   int cyclesCounter = 0;
   // late String formattedTimer = formatTimer(actualTimer);
-
+  final winNotifyPlugin = WindowsNotification(applicationId: 'pomo_tempus');
+  NotificationMessage message = NotificationMessage.fromPluginTemplate(
+    "focus",
+    "",
+    "Focus time",
+  );
   bool isPlaying = false;
+  bool isNotificationEnabled = true;
 
   void play() {
     isPlaying = !isPlaying;
@@ -31,10 +39,9 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
           timer.cancel();
           nextTimer();
         }
-
         if (minuteInSeconds.inSeconds == 0) {
           actualTimer -= Duration(minutes: 1);
-          minuteInSeconds = Duration(seconds: 59);
+          minuteInSeconds = Duration(seconds: 5);
           // formatTimer(focusTimer);
           notifyListeners();
         } else {
@@ -48,18 +55,28 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
     });
   }
 
-  void nextTimer() {
+  void nextTimer() async {
     if (cyclesCounter > 0 && cyclesCounter % 4 == 0) {
       actualTimer = longBreakTimer;
       actualTimerString = 'longBreak';
       isPlaying = false;
       minuteInSeconds = Duration(seconds: 0);
       cyclesCounter = 0;
+      message = NotificationMessage.fromPluginTemplate(
+        "rest",
+        "",
+        "Long break time",
+      );
     } else if (actualTimerString == 'focus') {
       actualTimer = shortBreakTimer;
       actualTimerString = 'shortBreak';
       isPlaying = false;
       minuteInSeconds = Duration(seconds: 0);
+      message = NotificationMessage.fromPluginTemplate(
+        "rest",
+        "",
+        "Short break time",
+      );
     } else if (actualTimerString == 'shortBreak' ||
         actualTimerString == 'longBreak') {
       actualTimer = focusTimer;
@@ -67,7 +84,13 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
       isPlaying = false;
       cyclesCounter++;
       minuteInSeconds = Duration(seconds: 0);
+      message = NotificationMessage.fromPluginTemplate(
+        "focus",
+        "",
+        "Focus time",
+      );
     }
+    await winNotifyPlugin.showNotificationPluginTemplate(message);
     notifyListeners();
   }
 
