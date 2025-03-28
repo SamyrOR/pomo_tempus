@@ -7,7 +7,7 @@ part of 'settings.dart';
 // **************************************************************************
 
 _Settings _$SettingsFromJson(Map<String, dynamic> json) => _Settings(
-  pomodoro: (json['pomodoro'] as num).toInt(),
+  focusTime: (json['focusTime'] as num).toInt(),
   shortBreak: (json['shortBreak'] as num).toInt(),
   longBreak: (json['longBreak'] as num).toInt(),
   isNotificationEnabled: json['isNotificationEnabled'] as bool,
@@ -17,7 +17,7 @@ _Settings _$SettingsFromJson(Map<String, dynamic> json) => _Settings(
 );
 
 Map<String, dynamic> _$SettingsToJson(_Settings instance) => <String, dynamic>{
-  'pomodoro': instance.pomodoro,
+  'focusTime': instance.focusTime,
   'shortBreak': instance.shortBreak,
   'longBreak': instance.longBreak,
   'isNotificationEnabled': instance.isNotificationEnabled,

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Settings {
 
- int get pomodoro; int get shortBreak; int get longBreak; bool get isNotificationEnabled; Color get themeColor;
+ int get focusTime; int get shortBreak; int get longBreak; bool get isNotificationEnabled; Color get themeColor;
 /// Create a copy of Settings
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $SettingsCopyWith<Settings> get copyWith => _$SettingsCopyWithImpl<Settings>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Settings&&(identical(other.pomodoro, pomodoro) || other.pomodoro == pomodoro)&&(identical(other.shortBreak, shortBreak) || other.shortBreak == shortBreak)&&(identical(other.longBreak, longBreak) || other.longBreak == longBreak)&&(identical(other.isNotificationEnabled, isNotificationEnabled) || other.isNotificationEnabled == isNotificationEnabled)&&(identical(other.themeColor, themeColor) || other.themeColor == themeColor));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Settings&&(identical(other.focusTime, focusTime) || other.focusTime == focusTime)&&(identical(other.shortBreak, shortBreak) || other.shortBreak == shortBreak)&&(identical(other.longBreak, longBreak) || other.longBreak == longBreak)&&(identical(other.isNotificationEnabled, isNotificationEnabled) || other.isNotificationEnabled == isNotificationEnabled)&&(identical(other.themeColor, themeColor) || other.themeColor == themeColor));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,pomodoro,shortBreak,longBreak,isNotificationEnabled,themeColor);
+int get hashCode => Object.hash(runtimeType,focusTime,shortBreak,longBreak,isNotificationEnabled,themeColor);
 
 @override
 String toString() {
-  return 'Settings(pomodoro: $pomodoro, shortBreak: $shortBreak, longBreak: $longBreak, isNotificationEnabled: $isNotificationEnabled, themeColor: $themeColor)';
+  return 'Settings(focusTime: $focusTime, shortBreak: $shortBreak, longBreak: $longBreak, isNotificationEnabled: $isNotificationEnabled, themeColor: $themeColor)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $SettingsCopyWith<$Res>  {
   factory $SettingsCopyWith(Settings value, $Res Function(Settings) _then) = _$SettingsCopyWithImpl;
 @useResult
 $Res call({
- int pomodoro, int shortBreak, int longBreak, bool isNotificationEnabled, Color themeColor
+ int focusTime, int shortBreak, int longBreak, bool isNotificationEnabled, Color themeColor
 });
 
 
@@ -66,9 +66,9 @@ class _$SettingsCopyWithImpl<$Res>
 
 /// Create a copy of Settings
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? pomodoro = null,Object? shortBreak = null,Object? longBreak = null,Object? isNotificationEnabled = null,Object? themeColor = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? focusTime = null,Object? shortBreak = null,Object? longBreak = null,Object? isNotificationEnabled = null,Object? themeColor = null,}) {
   return _then(_self.copyWith(
-pomodoro: null == pomodoro ? _self.pomodoro : pomodoro // ignore: cast_nullable_to_non_nullable
+focusTime: null == focusTime ? _self.focusTime : focusTime // ignore: cast_nullable_to_non_nullable
 as int,shortBreak: null == shortBreak ? _self.shortBreak : shortBreak // ignore: cast_nullable_to_non_nullable
 as int,longBreak: null == longBreak ? _self.longBreak : longBreak // ignore: cast_nullable_to_non_nullable
 as int,isNotificationEnabled: null == isNotificationEnabled ? _self.isNotificationEnabled : isNotificationEnabled // ignore: cast_nullable_to_non_nullable
@@ -84,10 +84,10 @@ as Color,
 @JsonSerializable()
 @_ColorConverter()
 class _Settings implements Settings {
-  const _Settings({required this.pomodoro, required this.shortBreak, required this.longBreak, required this.isNotificationEnabled, required this.themeColor});
+  const _Settings({required this.focusTime, required this.shortBreak, required this.longBreak, required this.isNotificationEnabled, required this.themeColor});
   factory _Settings.fromJson(Map<String, dynamic> json) => _$SettingsFromJson(json);
 
-@override final  int pomodoro;
+@override final  int focusTime;
 @override final  int shortBreak;
 @override final  int longBreak;
 @override final  bool isNotificationEnabled;
@@ -106,16 +106,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Settings&&(identical(other.pomodoro, pomodoro) || other.pomodoro == pomodoro)&&(identical(other.shortBreak, shortBreak) || other.shortBreak == shortBreak)&&(identical(other.longBreak, longBreak) || other.longBreak == longBreak)&&(identical(other.isNotificationEnabled, isNotificationEnabled) || other.isNotificationEnabled == isNotificationEnabled)&&(identical(other.themeColor, themeColor) || other.themeColor == themeColor));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Settings&&(identical(other.focusTime, focusTime) || other.focusTime == focusTime)&&(identical(other.shortBreak, shortBreak) || other.shortBreak == shortBreak)&&(identical(other.longBreak, longBreak) || other.longBreak == longBreak)&&(identical(other.isNotificationEnabled, isNotificationEnabled) || other.isNotificationEnabled == isNotificationEnabled)&&(identical(other.themeColor, themeColor) || other.themeColor == themeColor));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,pomodoro,shortBreak,longBreak,isNotificationEnabled,themeColor);
+int get hashCode => Object.hash(runtimeType,focusTime,shortBreak,longBreak,isNotificationEnabled,themeColor);
 
 @override
 String toString() {
-  return 'Settings(pomodoro: $pomodoro, shortBreak: $shortBreak, longBreak: $longBreak, isNotificationEnabled: $isNotificationEnabled, themeColor: $themeColor)';
+  return 'Settings(focusTime: $focusTime, shortBreak: $shortBreak, longBreak: $longBreak, isNotificationEnabled: $isNotificationEnabled, themeColor: $themeColor)';
 }
 
 
@@ -126,7 +126,7 @@ abstract mixin class _$SettingsCopyWith<$Res> implements $SettingsCopyWith<$Res>
   factory _$SettingsCopyWith(_Settings value, $Res Function(_Settings) _then) = __$SettingsCopyWithImpl;
 @override @useResult
 $Res call({
- int pomodoro, int shortBreak, int longBreak, bool isNotificationEnabled, Color themeColor
+ int focusTime, int shortBreak, int longBreak, bool isNotificationEnabled, Color themeColor
 });
 
 
@@ -143,9 +143,9 @@ class __$SettingsCopyWithImpl<$Res>
 
 /// Create a copy of Settings
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? pomodoro = null,Object? shortBreak = null,Object? longBreak = null,Object? isNotificationEnabled = null,Object? themeColor = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? focusTime = null,Object? shortBreak = null,Object? longBreak = null,Object? isNotificationEnabled = null,Object? themeColor = null,}) {
   return _then(_Settings(
-pomodoro: null == pomodoro ? _self.pomodoro : pomodoro // ignore: cast_nullable_to_non_nullable
+focusTime: null == focusTime ? _self.focusTime : focusTime // ignore: cast_nullable_to_non_nullable
 as int,shortBreak: null == shortBreak ? _self.shortBreak : shortBreak // ignore: cast_nullable_to_non_nullable
 as int,longBreak: null == longBreak ? _self.longBreak : longBreak // ignore: cast_nullable_to_non_nullable
 as int,isNotificationEnabled: null == isNotificationEnabled ? _self.isNotificationEnabled : isNotificationEnabled // ignore: cast_nullable_to_non_nullable

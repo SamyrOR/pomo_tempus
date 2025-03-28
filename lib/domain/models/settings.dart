@@ -8,7 +8,7 @@ part 'settings.g.dart';
 abstract class Settings with _$Settings {
   @_ColorConverter()
   const factory Settings({
-    required int pomodoro,
+    required int focusTime,
     required int shortBreak,
     required int longBreak,
     required bool isNotificationEnabled,
@@ -19,7 +19,7 @@ abstract class Settings with _$Settings {
       _$SettingsFromJson(json);
 
   factory Settings.initial() => Settings(
-    pomodoro: 25,
+    focusTime: 25,
     shortBreak: 5,
     longBreak: 15,
     isNotificationEnabled: true,
