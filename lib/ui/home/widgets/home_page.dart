@@ -204,7 +204,7 @@ Future<void> _configBuilder(
                             value: viewModel.isNotificationEnabled,
                             onChanged: (value) {
                               if (value != null)
-                                viewModel.changeNotification(value);
+                                viewModel.handleNotificationToggle(value);
                             },
                           ),
                         ],
@@ -213,7 +213,7 @@ Future<void> _configBuilder(
                       BlockPicker(
                         pickerColor: viewModel.pickerColor,
                         onColorChanged: (color) {
-                          viewModel.changeTheme(color);
+                          viewModel.handlePickColorSelect(color);
                         },
                       ),
                     ],

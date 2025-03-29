@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:pomo_tempus/domain/models/settings.dart';
 import 'package:pomo_tempus/theme_handler.dart';
 import 'package:windows_notification/notification_message.dart';
@@ -16,48 +16,64 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
 
   final SettingsRepository _settingsRepository;
 
+  //Timers
   Duration focusTimer = Duration(minutes: 25);
   Duration shortBreakTimer = Duration(minutes: 5);
   Duration longBreakTimer = Duration(minutes: 15);
   Duration minuteInSeconds = Duration(seconds: 0);
   late Duration actualTimer = focusTimer;
-  late Color pickerColor;
-  String actualTimerString = 'focus';
+
+  //Strings
+  String _focusString = 'focus';
+  String _focusTimeString = 'Focus time';
+  String _shortBreakString = 'shortBreak';
+  String _shortBreakTimeString = 'Short break time';
+  String _longBreakString = 'longBreak';
+  String _longBreakTimeString = 'Long break time';
+  String _restString = 'rest';
+  String _applicationID = 'pomo_tempus';
+
+  Color pickerColor = Colors.amber;
+  late String actualTimerString = _focusString;
   int cyclesCounter = 0;
-  // late String formattedTimer = formatTimer(actualTimer);
-  final winNotifyPlugin = WindowsNotification(applicationId: 'pomo_tempus');
-  NotificationMessage message = NotificationMessage.fromPluginTemplate(
-    "focus",
-    "",
-    "Focus time",
+
+  late final _winNotifyPlugin = WindowsNotification(
+    applicationId: _applicationID,
+  );
+
+  late NotificationMessage _message = NotificationMessage.fromPluginTemplate(
+    _focusString,
+    '',
+    _focusTimeString,
   );
   bool isPlaying = false;
-  late bool isNotificationEnabled;
+  bool isNotificationEnabled = true;
 
   Future<void> init() async {
     final settings = await _settingsRepository.getSettings();
     switch (settings) {
       case Ok<Settings?>():
         if (settings.value != null) {
-          focusTimer = Duration(minutes: settings.value!.focusTime);
-          shortBreakTimer = Duration(minutes: settings.value!.shortBreak);
-          longBreakTimer = Duration(minutes: settings.value!.longBreak);
-          actualTimer = focusTimer;
-          pickerColor = settings.value!.themeColor;
+          _updateInnerData(
+            focusTime: settings.value!.focusTime,
+            shortBreak: settings.value!.shortBreak,
+            longBreak: settings.value!.longBreak,
+            themeColor: settings.value!.themeColor,
+            notificationEnabled: settings.value!.isNotificationEnabled,
+          );
           ThemeHandler.instance.updateTheme(pickerColor);
-          isNotificationEnabled = settings.value!.isNotificationEnabled;
           notifyListeners();
         } else {
-          final initialSettings = Settings.initial();
-          focusTimer = Duration(minutes: initialSettings.focusTime);
-          shortBreakTimer = Duration(minutes: initialSettings.shortBreak);
-          longBreakTimer = Duration(minutes: initialSettings.longBreak);
-          pickerColor = initialSettings.themeColor;
           ThemeHandler.instance.updateTheme(pickerColor);
           actualTimer = focusTimer;
-          isNotificationEnabled = initialSettings.isNotificationEnabled;
           final resultSave = await _settingsRepository.saveSettings(
-            initialSettings,
+            Settings(
+              focusTime: focusTimer.inMinutes,
+              shortBreak: shortBreakTimer.inMinutes,
+              longBreak: longBreakTimer.inMinutes,
+              isNotificationEnabled: isNotificationEnabled,
+              themeColor: pickerColor,
+            ),
           );
           notifyListeners();
           switch (resultSave) {
@@ -75,14 +91,11 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
 
   void play() async {
     isPlaying = !isPlaying;
-    // print(isPlaying);
-    await decrementTimer();
+    await _decrementTimer();
     notifyListeners();
   }
 
-  void startTimer() {}
-
-  Future<void> decrementTimer() async {
+  Future<void> _decrementTimer() async {
     //Code partially generated with help of Gemini IA of Google
     Timer.periodic(Duration(seconds: 1), (timer) async {
       if (isPlaying) {
@@ -93,11 +106,9 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
         if (minuteInSeconds.inSeconds == 0) {
           actualTimer -= Duration(minutes: 1);
           minuteInSeconds = Duration(seconds: 59);
-          // formatTimer(focusTimer);
           notifyListeners();
         } else {
           minuteInSeconds -= Duration(seconds: 1);
-          // formatTimer(focusTimer);
           notifyListeners();
         }
       } else {
@@ -108,40 +119,31 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
 
   Future<void> nextTimer() async {
     if (cyclesCounter > 0 && cyclesCounter % 4 == 0) {
-      actualTimer = longBreakTimer;
-      actualTimerString = 'longBreak';
-      isPlaying = false;
-      minuteInSeconds = Duration(seconds: 0);
+      _updateNextTimer(
+        actual: longBreakTimer,
+        actualString: _longBreakString,
+        pluginId: _restString,
+        pluginText: _longBreakTimeString,
+      );
       cyclesCounter = 0;
-      message = NotificationMessage.fromPluginTemplate(
-        "rest",
-        "",
-        "Long break time",
+    } else if (actualTimerString == _focusString) {
+      _updateNextTimer(
+        actual: shortBreakTimer,
+        actualString: _shortBreakString,
+        pluginId: _restString,
+        pluginText: _shortBreakTimeString,
       );
-    } else if (actualTimerString == 'focus') {
-      actualTimer = shortBreakTimer;
-      actualTimerString = 'shortBreak';
-      isPlaying = false;
-      minuteInSeconds = Duration(seconds: 0);
-      message = NotificationMessage.fromPluginTemplate(
-        "rest",
-        "",
-        "Short break time",
+    } else if (actualTimerString == _shortBreakString ||
+        actualTimerString == _longBreakString) {
+      _updateNextTimer(
+        actual: focusTimer,
+        actualString: _focusString,
+        pluginId: _focusString,
+        pluginText: _focusTimeString,
       );
-    } else if (actualTimerString == 'shortBreak' ||
-        actualTimerString == 'longBreak') {
-      actualTimer = focusTimer;
-      actualTimerString = 'focus';
-      isPlaying = false;
       cyclesCounter++;
-      minuteInSeconds = Duration(seconds: 0);
-      message = NotificationMessage.fromPluginTemplate(
-        "focus",
-        "",
-        "Focus time",
-      );
     }
-    await winNotifyPlugin.showNotificationPluginTemplate(message);
+    await _winNotifyPlugin.showNotificationPluginTemplate(_message);
     notifyListeners();
   }
 
@@ -151,15 +153,15 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
     longBreakTimer = Duration(minutes: settings.longBreak);
     pickerColor = settings.themeColor;
     ThemeHandler.instance.updateTheme(pickerColor);
-    if (actualTimerString == 'focus') {
+    if (actualTimerString == _focusString) {
       actualTimer = focusTimer;
-    } else if (actualTimerString == 'shortBreak') {
+    } else if (actualTimerString == _shortBreakString) {
       actualTimer = shortBreakTimer;
-    } else if (actualTimerString == 'longBreak') {
+    } else if (actualTimerString == _longBreakString) {
       actualTimer = longBreakTimer;
     }
-    final resultSave = await _settingsRepository.saveSettings(settings);
     minuteInSeconds = Duration(seconds: 0);
+    final resultSave = await _settingsRepository.saveSettings(settings);
     notifyListeners();
     switch (resultSave) {
       case Ok<void>():
@@ -170,14 +172,13 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
     }
   }
 
-  void changeNotification(value) {
+  void handleNotificationToggle(value) {
     isNotificationEnabled = value;
     notifyListeners();
   }
 
-  void changeTheme(Color color) {
+  void handlePickColorSelect(Color color) {
     pickerColor = color;
-    // ThemeHandler.instance.updateTheme(pickerColor);
     notifyListeners();
   }
 
@@ -197,8 +198,31 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
     );
   }
 
-  // formatTimer(Duration actualTime) {
-  //   formattedTimer =
-  //       '${actualTimer.inMinutes < 10 ? '0' : ''}${actualTimer.inMinutes} : ${minuteInSeconds.inSeconds < 10 ? '0' : ''}${minuteInSeconds.inSeconds}';
-  // }
+  void _updateInnerData({
+    required int focusTime,
+    required int shortBreak,
+    required int longBreak,
+    required Color themeColor,
+    required bool notificationEnabled,
+  }) {
+    focusTimer = Duration(minutes: focusTime);
+    shortBreakTimer = Duration(minutes: shortBreak);
+    longBreakTimer = Duration(minutes: longBreak);
+    actualTimer = focusTimer;
+    pickerColor = themeColor;
+    isNotificationEnabled = notificationEnabled;
+  }
+
+  void _updateNextTimer({
+    required Duration actual,
+    required String actualString,
+    required String pluginId,
+    required String pluginText,
+  }) {
+    actualTimer = actual;
+    actualTimerString = actualString;
+    isPlaying = false;
+    minuteInSeconds = Duration(seconds: 0);
+    _message = NotificationMessage.fromPluginTemplate(pluginId, '', pluginText);
+  }
 }
