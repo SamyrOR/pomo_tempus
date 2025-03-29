@@ -44,11 +44,7 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
   late final _winNotifyPlugin = WindowsNotification(
     applicationId: _applicationID,
   );
-  late NotificationMessage _message = NotificationMessage.fromPluginTemplate(
-    _focusString,
-    '',
-    _focusTimeString,
-  );
+  late NotificationMessage _message;
 
   //Theme
   final themeService = ThemeService.instance;
@@ -147,7 +143,9 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
       );
       cyclesCounter++;
     }
-    await _winNotifyPlugin.showNotificationPluginTemplate(_message);
+    if (isNotificationEnabled) {
+      await _winNotifyPlugin.showNotificationPluginTemplate(_message);
+    }
     notifyListeners();
   }
 
