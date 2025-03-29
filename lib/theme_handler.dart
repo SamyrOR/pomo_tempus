@@ -14,7 +14,7 @@ class ThemeHandler {
     ColorScheme.fromSeed(seedColor: Colors.amberAccent),
   );
 
-  void updateTheme(ColorScheme newTheme) {
-    themeNotifier.value = newTheme;
+  void updateTheme(Color newTheme) {
+    themeNotifier.value = ColorScheme.fromSeed(seedColor: newTheme);
   }
 }

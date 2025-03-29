@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pomo_tempus/data/repositories/settings_repository.dart';
+import 'package:pomo_tempus/data/services/shared_preferences_service.dart';
 import 'package:pomo_tempus/theme_handler.dart';
 import 'package:pomo_tempus/ui/home/view_models/home_view_model.dart';
 import 'package:pomo_tempus/ui/home/widgets/home_page.dart';
@@ -9,7 +11,19 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => HomeViewModel())],
+      providers: [
+        Provider(lazy: true, create: (_) => SharedPreferencesService()),
+        Provider(
+          lazy: true,
+          create:
+              (context) =>
+                  SettingsRepository(sharedPreferencesService: context.read()),
+        ),
+        ChangeNotifierProvider(
+          create:
+              (context) => HomeViewModel(settingsRepository: context.read()),
+        ),
+      ],
       child: MainApp(),
     ),
   );

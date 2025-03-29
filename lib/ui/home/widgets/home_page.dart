@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:pomo_tempus/domain/models/settings.dart';
 import 'package:pomo_tempus/ui/home/view_models/home_view_model.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,6 +14,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await widget.viewModel.init();
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,107 +93,142 @@ class _HomePageState extends State<HomePage> {
 }
 
 Future<void> _configBuilder(BuildContext context, HomeViewModel viewModel) {
+  final TextEditingController _focusController = TextEditingController(
+    text: viewModel.focusTimer.inMinutes.toString(),
+  );
+  final TextEditingController _shortBreakController = TextEditingController(
+    text: viewModel.shortBreakTimer.inMinutes.toString(),
+  );
+  final TextEditingController _longBreakController = TextEditingController(
+    text: viewModel.longBreakTimer.inMinutes.toString(),
+  );
+
   return showDialog(
     context: context,
     builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text("Settings"),
-        content: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(8),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      return ListenableBuilder(
+        listenable: viewModel,
+        builder: (context, _) {
+          return AlertDialog(
+            title: Text("Settings"),
+            content: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(8),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text("Pomodoro:"),
-                    SizedBox(
-                      width: 75,
-                      child: TextFormField(
-                        initialValue: "25",
-                        textAlign: TextAlign.center,
-                        decoration: InputDecoration(suffixText: "min"),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Pomodoro:"),
+                        SizedBox(
+                          width: 75,
+                          child: TextFormField(
+                            controller: _focusController,
+                            textAlign: TextAlign.center,
+                            decoration: InputDecoration(suffixText: "min"),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-                  children: [
-                    Text("Short break:"),
-                    SizedBox(
-                      width: 75,
-                      child: TextFormField(
-                        initialValue: "5",
-                        textAlign: TextAlign.center,
-                        decoration: InputDecoration(suffixText: "min"),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                      ),
+                      children: [
+                        Text("Short break:"),
+                        SizedBox(
+                          width: 75,
+                          child: TextFormField(
+                            controller: _shortBreakController,
+                            textAlign: TextAlign.center,
+                            decoration: InputDecoration(suffixText: "min"),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Long break:"),
+                        SizedBox(
+                          width: 75,
+                          child: TextFormField(
+                            controller: _longBreakController,
+                            textAlign: TextAlign.center,
+                            decoration: InputDecoration(suffixText: "min"),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Notification enabled: "),
+                        Checkbox(
+                          value: viewModel.isNotificationEnabled,
+                          onChanged: (value) {
+                            if (value != null)
+                              viewModel.changeNotification(value);
+                          },
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                    BlockPicker(
+                      pickerColor: viewModel.pickerColor,
+                      onColorChanged: (color) {
+                        viewModel.changeTheme(color);
+                      },
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Long break:"),
-                    SizedBox(
-                      width: 75,
-                      child: TextFormField(
-                        initialValue: "15",
-                        textAlign: TextAlign.center,
-                        decoration: InputDecoration(suffixText: "min"),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Notification enabled: "),
-                    Checkbox(
-                      value: viewModel.isNotificationEnabled,
-                      onChanged: (value) {},
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16),
-                BlockPicker(
-                  pickerColor: Colors.amber,
-                  onColorChanged: (color) {
-                    print(color);
-                  },
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text("Save"),
-          ),
-        ],
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Settings settings = Settings(
+                    focusTime:
+                        _focusController.text.isNotEmpty
+                            ? int.parse(_focusController.text)
+                            : 25,
+                    shortBreak:
+                        _shortBreakController.text.isNotEmpty
+                            ? int.parse(_shortBreakController.text)
+                            : 5,
+                    longBreak:
+                        _longBreakController.text.isNotEmpty
+                            ? int.parse(_longBreakController.text)
+                            : 15,
+                    isNotificationEnabled: viewModel.isNotificationEnabled,
+                    themeColor: viewModel.pickerColor,
+                  );
+                  viewModel.changeSettings(settings);
+                  Navigator.of(context).pop();
+                },
+                child: Text("Save"),
+              ),
+            ],
+          );
+        },
       );
     },
   );
