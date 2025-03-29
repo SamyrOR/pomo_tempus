@@ -155,7 +155,7 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
       actualTimer = focusTimer;
     } else if (actualTimerString == 'shortBreak') {
       actualTimer = shortBreakTimer;
-    } else {
+    } else if (actualTimerString == 'longBreak') {
       actualTimer = longBreakTimer;
     }
     final resultSave = await _settingsRepository.saveSettings(settings);
@@ -179,6 +179,22 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
     pickerColor = color;
     // ThemeHandler.instance.updateTheme(pickerColor);
     notifyListeners();
+  }
+
+  Settings parseSettingsFromForm({
+    required String focusTime,
+    required String shortBreak,
+    required String longBreak,
+    required bool isNotificationEnabled,
+    required Color themeColor,
+  }) {
+    return Settings(
+      focusTime: int.parse(focusTime),
+      shortBreak: int.parse(shortBreak),
+      longBreak: int.parse(longBreak),
+      isNotificationEnabled: isNotificationEnabled,
+      themeColor: themeColor,
+    );
   }
 
   // formatTimer(Duration actualTime) {
