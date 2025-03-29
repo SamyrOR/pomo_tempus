@@ -36,7 +36,7 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
 
   //Others
   Color pickerColor = Colors.amber;
-  int cyclesCounter = 0;
+  int cyclesCounter = 1;
   bool isPlaying = false;
   bool isNotificationEnabled = true;
 
