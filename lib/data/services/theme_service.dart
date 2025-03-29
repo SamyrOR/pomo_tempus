@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class ThemeHandler {
-  static ThemeHandler? _instance;
+class ThemeService {
+  static ThemeService? _instance;
 
-  static ThemeHandler get instance {
-    _instance ??= ThemeHandler._init();
+  static ThemeService get instance {
+    _instance ??= ThemeService._init();
     return _instance!;
   }
 
-  ThemeHandler._init();
+  ThemeService._init();
 
   ValueNotifier<ColorScheme> themeNotifier = ValueNotifier<ColorScheme>(
-    ColorScheme.fromSeed(seedColor: Colors.amberAccent),
+    ColorScheme.fromSeed(seedColor: Colors.white),
   );
 
   void updateTheme(Color newTheme) {

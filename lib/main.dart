@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pomo_tempus/data/repositories/settings_repository.dart';
 import 'package:pomo_tempus/data/services/shared_preferences_service.dart';
-import 'package:pomo_tempus/theme_handler.dart';
+import 'package:pomo_tempus/data/services/theme_service.dart';
 import 'package:pomo_tempus/ui/home/view_models/home_view_model.dart';
 import 'package:pomo_tempus/ui/home/widgets/home_page.dart';
 import 'package:provider/provider.dart';
@@ -34,9 +34,9 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeHandler = ThemeHandler.instance;
+    final themeService = ThemeService.instance;
     return ValueListenableBuilder(
-      valueListenable: themeHandler.themeNotifier,
+      valueListenable: themeService.themeNotifier,
       builder: (context, value, child) {
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,

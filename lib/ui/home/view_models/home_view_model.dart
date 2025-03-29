@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:pomo_tempus/data/services/theme_service.dart';
 import 'package:pomo_tempus/domain/models/settings.dart';
-import 'package:pomo_tempus/theme_handler.dart';
 import 'package:windows_notification/notification_message.dart';
 import 'package:windows_notification/windows_notification.dart';
 
@@ -32,22 +32,26 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
   String _longBreakTimeString = 'Long break time';
   String _restString = 'rest';
   String _applicationID = 'pomo_tempus';
-
-  Color pickerColor = Colors.amber;
   late String actualTimerString = _focusString;
-  int cyclesCounter = 0;
 
+  //Others
+  Color pickerColor = Colors.amber;
+  int cyclesCounter = 0;
+  bool isPlaying = false;
+  bool isNotificationEnabled = true;
+
+  //Notifier
   late final _winNotifyPlugin = WindowsNotification(
     applicationId: _applicationID,
   );
-
   late NotificationMessage _message = NotificationMessage.fromPluginTemplate(
     _focusString,
     '',
     _focusTimeString,
   );
-  bool isPlaying = false;
-  bool isNotificationEnabled = true;
+
+  //Theme
+  final themeService = ThemeService.instance;
 
   Future<void> init() async {
     final settings = await _settingsRepository.getSettings();
@@ -61,10 +65,10 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
             themeColor: settings.value!.themeColor,
             notificationEnabled: settings.value!.isNotificationEnabled,
           );
-          ThemeHandler.instance.updateTheme(pickerColor);
+          themeService.updateTheme(pickerColor);
           notifyListeners();
         } else {
-          ThemeHandler.instance.updateTheme(pickerColor);
+          themeService.updateTheme(pickerColor);
           actualTimer = focusTimer;
           final resultSave = await _settingsRepository.saveSettings(
             Settings(
@@ -152,7 +156,7 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
     shortBreakTimer = Duration(minutes: settings.shortBreak);
     longBreakTimer = Duration(minutes: settings.longBreak);
     pickerColor = settings.themeColor;
-    ThemeHandler.instance.updateTheme(pickerColor);
+    themeService.updateTheme(pickerColor);
     if (actualTimerString == _focusString) {
       actualTimer = focusTimer;
     } else if (actualTimerString == _shortBreakString) {
