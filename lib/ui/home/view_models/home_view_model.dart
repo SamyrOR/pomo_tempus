@@ -12,7 +12,7 @@ import '../../../utils/result.dart';
 
 class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
   HomeViewModel({required SettingsRepository settingsRepository})
-      : _settingsRepository = settingsRepository;
+    : _settingsRepository = settingsRepository;
 
   final SettingsRepository _settingsRepository;
 
@@ -83,14 +83,20 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
             case Ok<void>():
             case Error<void>():
               _message = NotificationMessage.fromPluginTemplate(
-                  _errorID, '', _saveErrorMessage);
+                _errorID,
+                '',
+                _saveErrorMessage,
+              );
               _winNotifyPlugin.showNotificationPluginTemplate(_message);
               break;
           }
         }
       case Error<Settings?>():
         _message = NotificationMessage.fromPluginTemplate(
-            _errorID, '', _retrieveErrorMessage);
+          _errorID,
+          '',
+          _retrieveErrorMessage,
+        );
         _winNotifyPlugin.showNotificationPluginTemplate(_message);
     }
   }
@@ -108,6 +114,7 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
         if (actualTimer.inSeconds == 0 && minuteInSeconds.inSeconds == 0) {
           timer.cancel();
           await nextTimer();
+          return;
         }
         if (minuteInSeconds.inSeconds == 0) {
           actualTimer -= Duration(minutes: 1);
@@ -176,7 +183,10 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
         break;
       case Error<void>():
         _message = NotificationMessage.fromPluginTemplate(
-            _errorID, '', _saveErrorMessage);
+          _errorID,
+          '',
+          _saveErrorMessage,
+        );
         _winNotifyPlugin.showNotificationPluginTemplate(_message);
         break;
     }
