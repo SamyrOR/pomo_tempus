@@ -12,7 +12,7 @@ import '../../../utils/result.dart';
 
 class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
   HomeViewModel({required SettingsRepository settingsRepository})
-    : _settingsRepository = settingsRepository;
+      : _settingsRepository = settingsRepository;
 
   final SettingsRepository _settingsRepository;
 
@@ -31,6 +31,9 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
   String _longBreakString = 'longBreak';
   String _longBreakTimeString = 'Long break time';
   String _restString = 'rest';
+  String _errorID = 'error';
+  String _saveErrorMessage = 'Error while saving the settings';
+  String _retrieveErrorMessage = 'Error while retrieving the settings';
   String _applicationID = 'pomo_tempus';
   late String actualTimerString = _focusString;
 
@@ -79,13 +82,16 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
           switch (resultSave) {
             case Ok<void>():
             case Error<void>():
-              // TODO: Handle this case.
-              throw UnimplementedError();
+              _message = NotificationMessage.fromPluginTemplate(
+                  _errorID, '', _saveErrorMessage);
+              _winNotifyPlugin.showNotificationPluginTemplate(_message);
+              break;
           }
         }
       case Error<Settings?>():
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        _message = NotificationMessage.fromPluginTemplate(
+            _errorID, '', _retrieveErrorMessage);
+        _winNotifyPlugin.showNotificationPluginTemplate(_message);
     }
   }
 
@@ -169,8 +175,10 @@ class HomeViewModel with ChangeNotifier, DiagnosticableTreeMixin {
       case Ok<void>():
         break;
       case Error<void>():
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        _message = NotificationMessage.fromPluginTemplate(
+            _errorID, '', _saveErrorMessage);
+        _winNotifyPlugin.showNotificationPluginTemplate(_message);
+        break;
     }
   }
 
